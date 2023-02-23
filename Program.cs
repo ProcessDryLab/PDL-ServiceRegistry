@@ -1,3 +1,5 @@
+using ServiceRegistry.ConnectedNodes;
+
 namespace ServiceRegistry
 {
     public class Program
@@ -5,6 +7,8 @@ namespace ServiceRegistry
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            if (builder.Environment.IsDevelopment()) builder.WebHost.UseUrls("https://localhost:3000");
 
             // Add services to the container.
             builder.Services.AddAuthorization();
@@ -26,24 +30,21 @@ namespace ServiceRegistry
 
             app.UseAuthorization();
 
-            var summaries = new[]
-            {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        };
+            Node node = new Node();
+            node.path = "pathRepository";
+            node.type = "repository";
 
-            app.MapGet("/weatherforecast", (HttpContext httpContext) =>
-            {
-                var forecast = Enumerable.Range(1, 5).Select(index =>
-                    new WeatherForecast
-                    {
-                        Date = DateTime.Now.AddDays(index),
-                        TemperatureC = Random.Shared.Next(-20, 55),
-                        Summary = summaries[Random.Shared.Next(summaries.Length)]
-                    })
-                    .ToArray();
-                return forecast;
-            })
-            .WithName("GetWeatherForecast");
+            ConnectedNodes.ConnectedNodes.Instance.AddNode(node.path, node);
+
+            Node node2 = new Node();
+            node2.path = "pathMiner";
+            node2.type = "miner";
+
+            ConnectedNodes.ConnectedNodes.Instance.AddNode(node2.path, node2);
+
+            //new Requests.Requests(app);
+
+            new Endpoints.Endpoints(app);
 
             app.Run();
         }

@@ -10,7 +10,7 @@ namespace ServiceRegistry.Endpoints
         {
             app.MapGet("resources/miners", (HttpContext httpContext) =>
             {
-                Console.Write("Service registry has recieved a quest on /test");
+                Console.Write("Service registry has recieved a quest on /resources/miners");
                 return ConnectedNodes.ConnectedNodes.Instance.nodes.Where(n => n.Value.type == "miner");
                 //return "[miner1, miner2, miner3]";
             })
@@ -18,15 +18,23 @@ namespace ServiceRegistry.Endpoints
 
             app.MapGet("resources/repositories", (HttpContext httpContext) =>
             {
-                Console.Write("Service registry has recieved a quest on /test");
+                Console.Write("Service registry has recieved a quest on /resources/repositories");
                 return ConnectedNodes.ConnectedNodes.Instance.nodes.Where(n => n.Value.type == "repository");
+                //return "[Repo1, repo2, repo3]";
+            })
+            .WithName("GetRepositories");
+
+            app.MapGet("Ping", (HttpContext httpContext) =>
+            {
+                Console.Write("Service registry has recieved a quest on /ping");
+                return "Pong";
                 //return "[Repo1, repo2, repo3]";
             })
             .WithName("GetRepositories");
 
             app.MapPost("resources/Add/Repository", (HttpContext httpContext) =>
             {
-                Console.Write("Service registry has recieved a quest on /Node");
+                Console.Write("Service registry has recieved a quest on /resources/add/repository");
 
                 Node node = new Node();
                 node.path = "path";

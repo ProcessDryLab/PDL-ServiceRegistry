@@ -18,7 +18,16 @@ namespace ServiceRegistry
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+            builder.Services.AddCors();
+
+
             var app = builder.Build();
+
+            app.UseCors(builder => builder
+            .AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            );
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())

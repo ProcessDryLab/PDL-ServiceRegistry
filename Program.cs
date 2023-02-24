@@ -1,4 +1,5 @@
 using ServiceRegistry.ConnectedNodes;
+using ServiceRegistry.Requests;
 
 namespace ServiceRegistry
 {
@@ -30,19 +31,8 @@ namespace ServiceRegistry
 
             app.UseAuthorization();
 
-            Node node = new Node();
-            node.path = "pathRepository";
-            node.type = "repository";
 
-            ConnectedNodes.ConnectedNodes.Instance.AddNode(node.path, node);
-
-            Node node2 = new Node();
-            node2.path = "pathMiner";
-            node2.type = "miner";
-
-            ConnectedNodes.ConnectedNodes.Instance.AddNode(node2.path, node2);
-
-            //new Requests.Requests(app);
+            //Requests.Requests.GetConfig("http://localhost:5000/configurations");
 
             new Endpoints.Endpoints(app);
 

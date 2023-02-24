@@ -27,9 +27,16 @@ namespace ServiceRegistry.Endpoints
 
             app.MapPost("resources/Repositories", async (HttpContext httpContext) =>
             {
-                return await Requests.Requests.GetConfig("http://localhost:5000/configurations");
+                return await Requests.Requests.GetConfig("https://localhost:4000/configurations");
             })
             .WithName("PostRepositories");
+
+            app.MapPost("resources/Miners", async (HttpContext httpContext) =>
+            {
+                return await Requests.Requests.GetConfig("http://localhost:5000/configurations");
+            })
+            .WithName("PostMiners");
+
         }
     }
 }

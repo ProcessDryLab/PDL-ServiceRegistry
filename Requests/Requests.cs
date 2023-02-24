@@ -18,9 +18,10 @@ namespace ServiceRegistry.Requests
                     Node n = JsonConvert.DeserializeObject<Node>(res);
                     n.path = path;
                     ConnectedNodes.ConnectedNodes.Instance.AddNode(path, n);
+                    return "Success";
                 }
             }
-            return "complete"; //return the result of the call
+            return "Failure";
         }
 
         public static async Task<bool> GetPing(string path)

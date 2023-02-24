@@ -9,31 +9,27 @@ namespace ServiceRegistry.Endpoints
         {
             app.MapGet("resources/miners", (HttpContext httpContext) =>
             {
-                Console.Write("Service registry has recieved a quest on /resources/miners");
-                return ConnectedNodes.ConnectedNodes.Instance.Filter("miner");
+                return ConnectedNodes.ConnectedNodes.Instance.Filter("Miner");
             })
             .WithName("GetMiners");
 
             app.MapGet("resources/repositories", (HttpContext httpContext) =>
             {
-                Console.Write("Service registry has recieved a quest on /resources/repositories");
-                return ConnectedNodes.ConnectedNodes.Instance.Filter("repository");
+                return ConnectedNodes.ConnectedNodes.Instance.Filter("Repository");
             })
             .WithName("GetRepositories");
 
             app.MapGet("Ping", (HttpContext httpContext) =>
             {
-                Console.Write("Service registry has recieved a quest on /ping");
                 return "Pong";
             })
-            .WithName("GetRepositories");
+            .WithName("Ping");
 
-            app.MapPost("resources/Add/Repository", (HttpContext httpContext) =>
+            app.MapPost("resources/Repositories", async (HttpContext httpContext) =>
             {
-                Requests.Requests.GetConfig("http://localhost:5000/configurations");
+                return await Requests.Requests.GetConfig("http://localhost:5000/configurations");
             })
             .WithName("PostRepositories");
-
         }
     }
 }

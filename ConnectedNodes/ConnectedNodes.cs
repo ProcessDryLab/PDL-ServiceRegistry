@@ -22,8 +22,7 @@ namespace ServiceRegistry.ConnectedNodes
         {
             if(!nodes.ContainsKey(path) && node != null)
             {
-                Console.WriteLine("Adding: " + path + " as a: " + node.type);
-                nodes.Add(path, node);
+                Instance.nodes.Add(path, node);
             }
         }
 
@@ -34,7 +33,7 @@ namespace ServiceRegistry.ConnectedNodes
 
         public Node GetNode(string path)
         {
-            return nodes[path];
+            return Instance.nodes[path];
         }
 
         public Dictionary<string, Node> Filter(string filterParam)

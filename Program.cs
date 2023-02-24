@@ -31,9 +31,6 @@ namespace ServiceRegistry
 
             app.UseAuthorization();
 
-
-            //Requests.Requests.GetConfig("http://localhost:5000/configurations");
-
             new Endpoints.Endpoints(app);
 
             app.Run();

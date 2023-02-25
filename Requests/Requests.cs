@@ -10,7 +10,8 @@ namespace ServiceRegistry.Requests
         static HttpClient client = new HttpClient();
         public static async Task<string> GetConfig(string path)
         {
-            HttpResponseMessage response = await client.GetAsync(path);
+            string requestPath = path + "/configurations";
+            HttpResponseMessage response = await client.GetAsync(requestPath);
             if (response.IsSuccessStatusCode)
             {
                 var res = await response.Content.ReadAsStringAsync();

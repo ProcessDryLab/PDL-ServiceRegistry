@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using Newtonsoft.Json;
 using ServiceRegistry.ConnectedNodes;
 
 namespace ServiceRegistry.Endpoints
@@ -9,13 +10,13 @@ namespace ServiceRegistry.Endpoints
         {
             app.MapGet("resources/miners", (HttpContext httpContext) =>
             {
-                return ConnectedNodes.ConnectedNodes.Instance.Filter("Miner");
+                return JsonConvert.SerializeObject(ConnectedNodes.ConnectedNodes.Instance.Filter("Miner"));
             })
             .WithName("GetMiners");
 
             app.MapGet("resources/repositories", (HttpContext httpContext) =>
             {
-                return ConnectedNodes.ConnectedNodes.Instance.Filter("Repository");
+                return JsonConvert.SerializeObject(ConnectedNodes.ConnectedNodes.Instance.Filter("Repository"));
             })
             .WithName("GetRepositories");
 
@@ -27,13 +28,13 @@ namespace ServiceRegistry.Endpoints
 
             app.MapPost("resources/Repositories", async (HttpContext httpContext) =>
             {
-                return await Requests.Requests.GetConfig("https://localhost:4000/configurations");
+                return await Requests.Requests.GetConfig("https://localhost:4000");
             })
             .WithName("PostRepositories");
 
             app.MapPost("resources/Miners", async (HttpContext httpContext) =>
             {
-                return await Requests.Requests.GetConfig("http://localhost:5000/configurations");
+                return await Requests.Requests.GetConfig("http://localhost:5000");
             })
             .WithName("PostMiners");
 

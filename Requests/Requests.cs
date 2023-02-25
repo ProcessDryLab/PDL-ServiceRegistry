@@ -17,7 +17,7 @@ namespace ServiceRegistry.Requests
                 var res = await response.Content.ReadAsStringAsync();
                 if(res != null) {
                     Node n = JsonConvert.DeserializeObject<Node>(res);
-                    n.path = path;
+                    n.name = path;
                     ConnectedNodes.ConnectedNodes.Instance.AddNode(path, n);
                     return "Success";
                 }
@@ -27,7 +27,8 @@ namespace ServiceRegistry.Requests
 
         public static async Task<bool> GetPing(string path)
         {
-            HttpResponseMessage response = await client.GetAsync(path);
+            string requestPath = path + "/api/v1/system/ping";
+            HttpResponseMessage response = await client.GetAsync(requestPath);
             if (response.IsSuccessStatusCode)
             {
                 return true;

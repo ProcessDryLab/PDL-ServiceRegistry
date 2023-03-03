@@ -3,9 +3,11 @@
     "Label": "PaliaMiner",
     "Type": "Miner",
     "Access": "Public",
-    "Parameters": {
-      "Type": "bool",
-      "Value": "true"
-    }
+    "Parameters": [
+      {
+        "Type": "bool",
+        "Value": "true"
+      }
+    ]
   }
 }

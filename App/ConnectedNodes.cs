@@ -8,11 +8,7 @@ namespace ServiceRegistry.ConnectedNodes
     {
         private static ConnectedNodes? instance = null;
         static readonly string connectedMinersPath = Path.Combine(Directory.GetCurrentDirectory(), "connectedMiners.json");
-        static readonly string connectedRepositoriesPath = Path.Combine(Directory.GetCurrentDirectory(), "connectedRepositories.json");
-
-        //private Dictionary<string, Node> minerNodes = GetConnectedNodes(connectedMinersPath);
-        //private Dictionary<string, Node> repositoryNodes = GetConnectedNodes(connectedRepositoriesPath);
-        public static ConnectedNodes Instance
+        static readonly string connectedRepositoriesPath = Path.Combine(Directory.GetCurrentDirectory(), "connectedRepositories.json");        public static ConnectedNodes Instance
         {
             get
             {
@@ -56,7 +52,6 @@ namespace ServiceRegistry.ConnectedNodes
             }
         }
 
-
         public void AddNode(string hostName, Node node)
         {
             var nodes = GetConnectedNodes(node.Type);
@@ -85,45 +80,6 @@ namespace ServiceRegistry.ConnectedNodes
             }
             return listOfNodes;
         }
-
-
-        //public void AddMiner(string hostName, Node node)
-        //{
-        //    Instance.minerNodes.Add(hostName, node);
-        //    string updatedNodesString = JsonConvert.SerializeObject(minerNodes, Formatting.Indented);
-        //    File.WriteAllText(connectedMinersPath, updatedNodesString);
-        //}
-        //public void AddRepository(string hostName, Node node)
-        //{
-        //    Instance.repositoryNodes.Add(hostName, node);
-        //    string updatedNodesString = JsonConvert.SerializeObject(repositoryNodes, Formatting.Indented);
-        //    File.WriteAllText(connectedRepositoriesPath, updatedNodesString);
-        //}
-        //public void RemoveMiner(string hostName)
-        //{
-        //    //var minerNodes = GetConnectedNodes(connectedMinersPath);
-        //    Instance.minerNodes.Remove(hostName);
-        //    string updatedNodesString = JsonConvert.SerializeObject(minerNodes, Formatting.Indented);
-        //    File.WriteAllText(connectedMinersPath, updatedNodesString);
-        //}
-
-        //public void RemoveRepository(string hostName)
-        //{
-        //    //var repositoryNodes = GetConnectedNodes(connectedRepositoriesPath);
-        //    Instance.repositoryNodes.Remove(hostName);
-        //    string updatedNodesString = JsonConvert.SerializeObject(repositoryNodes, Formatting.Indented);
-        //    File.WriteAllText(connectedRepositoriesPath, updatedNodesString);
-        //}
-        //public Node GetMiner(string hostName)
-        //{
-        //    //var minerNodes = GetConnectedNodes(connectedMinersPath);
-        //    return Instance.minerNodes[hostName];
-        //}
-        //public Node GetRepository(string hostName)
-        //{
-        //    //var repositoryNodes = GetConnectedNodes(connectedRepositoriesPath);
-        //    return Instance.repositoryNodes[hostName];
-        //}
 
         //public List<Node> Filter(string filterParam)
         //{

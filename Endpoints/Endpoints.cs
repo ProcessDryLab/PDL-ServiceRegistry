@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using Newtonsoft.Json;
 using ServiceRegistry.ConnectedNodes;
+using ServiceRegistry.Requests;
 
 namespace ServiceRegistry.Endpoints
 {
@@ -8,35 +9,31 @@ namespace ServiceRegistry.Endpoints
     {
         public Endpoints(WebApplication app)
         {
-            app.MapGet("resources/miners", (HttpContext httpContext) =>
+            // MINERS
+            app.MapGet("/miners", (HttpContext httpContext) =>
             {
-                return JsonConvert.SerializeObject(ConnectedNodes.ConnectedNodes.Instance.Filter("Miner"));
-            })
-            .WithName("GetMiners");
+                return JsonConvert.SerializeObject(ConnectedNodes.ConnectedNodes.Instance.GetList(NodeType.Miner));
+            });
 
-            app.MapGet("resources/repositories", (HttpContext httpContext) =>
+            app.MapPost("/miners", async (HttpRequest request) =>
             {
-                return JsonConvert.SerializeObject(ConnectedNodes.ConnectedNodes.Instance.Filter("Repository"));
-            })
-            .WithName("GetRepositories");
+                return await Requests.Requests.GetConfig(request);
+            });
+            // REPOSITORIES
+            app.MapGet("/repositories", (HttpContext httpContext) =>
+            {
+                return JsonConvert.SerializeObject(ConnectedNodes.ConnectedNodes.Instance.GetList(NodeType.Repository));
+            });
 
-            app.MapGet("Ping", (HttpContext httpContext) =>
+            app.MapPost("/repositories", async (HttpRequest request) =>
             {
-                return "Pong";
-            })
-            .WithName("Ping");
-
-            app.MapPost("resources/Repositories", async (HttpContext httpContext) =>
+                return await Requests.Requests.GetConfig(request);
+            });
+            // PING
+            app.MapGet("ping", (HttpContext httpContext) =>
             {
-                return await Requests.Requests.GetConfig("https://localhost:4000");
-            })
-            .WithName("PostRepositories");
-
-            app.MapPost("resources/Miners", async (HttpContext httpContext) =>
-            {
-                return await Requests.Requests.GetConfig("http://localhost:5000");
-            })
-            .WithName("PostMiners");
+                return "pong";
+            });
 
         }
     }

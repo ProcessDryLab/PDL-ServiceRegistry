@@ -9,5 +9,10 @@
         "Value": "true"
       }
     ]
+  },
+  "http://localhost:5000": {
+    "Label": "Alfa Miner",
+    "Type": "Miner",
+    "Access": "Public"
   }
 }

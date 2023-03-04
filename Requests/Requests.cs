@@ -35,7 +35,6 @@ namespace ServiceRegistry.Requests
             bool validResponseBody = responseString.TryParseJson(out Node node);
             if (!validResponseBody || node == null) return Results.BadRequest("Response body from new node is invalid or empty");
 
-            node.HostName = hostName;
             ConnectedNodes.ConnectedNodes.Instance.AddNode(hostName, node);
             return Results.Accepted($"Node with host name {hostName} added successfully");
         }

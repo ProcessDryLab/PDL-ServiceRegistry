@@ -3,5 +3,10 @@
     "Label": "Public Repository",
     "Type": "Repository",
     "Access": "Public"
+  },
+  "https://localhost:4000": {
+    "Label": "Public Repository",
+    "Type": "Repository",
+    "Access": "Public"
   }
 }

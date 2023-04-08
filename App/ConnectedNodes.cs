@@ -8,7 +8,8 @@ namespace ServiceRegistry.ConnectedNodes
     {
         private static ConnectedNodes? instance = null;
         static readonly string connectedMinersPath = Path.Combine(Directory.GetCurrentDirectory(), "connectedMiners.json");
-        static readonly string connectedRepositoriesPath = Path.Combine(Directory.GetCurrentDirectory(), "connectedRepositories.json");        public static ConnectedNodes Instance
+        static readonly string connectedRepositoriesPath = Path.Combine(Directory.GetCurrentDirectory(), "connectedRepositories.json");        
+        public static ConnectedNodes Instance
         {
             get
             {

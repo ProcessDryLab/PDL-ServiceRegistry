@@ -38,7 +38,7 @@ namespace ServiceRegistry.Endpoints
                 return "pong";
             });
 
-            app.MapGet("/connections/filters", async (HttpRequest request) =>
+            app.MapPost("/connections/filters", async (HttpRequest request) =>
             {
                 var body = new StreamReader(request.Body);
                 string bodyString = await body.ReadToEndAsync();
@@ -48,7 +48,7 @@ namespace ServiceRegistry.Endpoints
                 var OnlineStatus = ConnectedNodes.ConnectedNodes.Instance.GetOnlineStatus();
                 var requestedHostsOnlineStatus = requestedHostsList.Where(key => OnlineStatus.ContainsKey(key)).Select(k => new { host = k, status = OnlineStatus[k] });
 
-                return Results.Ok(JsonConvert.SerializeObject(requestedHostsOnlineStatus));
+                return Results.Ok(requestedHostsOnlineStatus);
             });
 
         }

@@ -10,7 +10,8 @@ namespace ServiceRegistry.ConnectedNodes
         private static ConnectedNodes? instance = null;
         static readonly string connectedMinersPath = Path.Combine(Directory.GetCurrentDirectory(), "connectedMiners.json");
         static readonly string connectedRepositoriesPath = Path.Combine(Directory.GetCurrentDirectory(), "connectedRepositories.json");  
-        private static Dictionary<string, Boolean> OnlineStatus = new Dictionary<string, Boolean>();
+        private static Dictionary<string, Boolean> OnlineStatus = new Dictionary<string, Boolean>();   
+
         public static ConnectedNodes Instance
         {
             get

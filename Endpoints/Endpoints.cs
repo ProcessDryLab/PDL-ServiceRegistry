@@ -1,4 +1,7 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Xml.Linq;
 using Newtonsoft.Json;
 using ServiceRegistry.ConnectedNodes;
 using ServiceRegistry.Requests;
@@ -33,6 +36,19 @@ namespace ServiceRegistry.Endpoints
             app.MapGet("ping", (HttpContext httpContext) =>
             {
                 return "pong";
+            });
+
+            app.MapGet("/connections/filters", async (HttpRequest request) =>
+            {
+                var body = new StreamReader(request.Body);
+                string bodyString = await body.ReadToEndAsync();
+                bool validRequest = bodyString.TryParseJson(out List<string> requestedHostsList);
+                if (!validRequest) return Results.BadRequest($"Request body: {bodyString} is not a valid list");
+
+                var OnlineStatus = ConnectedNodes.ConnectedNodes.Instance.GetOnlineStatus();
+                var requestedHostsOnlineStatus = requestedHostsList.Where(key => OnlineStatus.ContainsKey(key)).Select(k => new { host = k, status = OnlineStatus[k] });
+
+                return Results.Ok(JsonConvert.SerializeObject(requestedHostsOnlineStatus));
             });
 
         }

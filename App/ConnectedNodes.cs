@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Xml.Linq;
+using ServiceRegistry.Requests;
 
 namespace ServiceRegistry.ConnectedNodes
 {
@@ -8,7 +9,9 @@ namespace ServiceRegistry.ConnectedNodes
     {
         private static ConnectedNodes? instance = null;
         static readonly string connectedMinersPath = Path.Combine(Directory.GetCurrentDirectory(), "connectedMiners.json");
-        static readonly string connectedRepositoriesPath = Path.Combine(Directory.GetCurrentDirectory(), "connectedRepositories.json");        public static ConnectedNodes Instance
+        static readonly string connectedRepositoriesPath = Path.Combine(Directory.GetCurrentDirectory(), "connectedRepositories.json");  
+        private static Dictionary<string, Boolean> OnlineStatus = new Dictionary<string, Boolean>();
+        public static ConnectedNodes Instance
         {
             get
             {
@@ -79,6 +82,26 @@ namespace ServiceRegistry.ConnectedNodes
                 listOfNodes.Add(node.Value);    // Adding updated 
             }
             return listOfNodes;
+        }
+
+        public void UpdateOnlineStatus()
+        {
+            GetList(NodeType.Miner).ForEach(async node =>
+            {
+                OnlineStatus[node.HostName] = await Requests.Requests.GetPing(node.HostName);
+                //OnlineStatus.Add(node.HostName, await Requests.Requests.GetPing(node.HostName));
+            });
+
+            GetList(NodeType.Repository).ForEach(async node =>
+            {
+                OnlineStatus[node.HostName] = await Requests.Requests.GetPing(node.HostName);
+                //OnlineStatus.Add(node.HostName, await Requests.Requests.GetPing(node.HostName));
+            });
+        }
+
+        public Dictionary<string, Boolean> GetOnlineStatus()
+        {
+            return OnlineStatus;
         }
 
         //public List<Node> Filter(string filterParam)

@@ -42,6 +42,17 @@ namespace ServiceRegistry
 
             new Endpoints.Endpoints(app);
 
+            Thread updateStatusThread = new Thread(() => {
+                while (true)
+                {
+                    //call your method here...
+                    ConnectedNodes.ConnectedNodes.Instance.UpdateOnlineStatus();
+                    Thread.Sleep(500); //optional if you want a pause between calls.
+                }
+            });
+            updateStatusThread.IsBackground = true;
+            updateStatusThread.Start();
+
             app.Run();
         }
     }

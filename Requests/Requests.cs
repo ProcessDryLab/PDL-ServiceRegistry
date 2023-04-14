@@ -42,12 +42,20 @@ namespace ServiceRegistry.Requests
         public static async Task<bool> GetPing(string path)
         {
             string requestPath = path + "/ping";
-            HttpResponseMessage response = await client.GetAsync(requestPath);
-            if (response.IsSuccessStatusCode)
+            try
             {
-                return true;
+                HttpResponseMessage response = await client.GetAsync(requestPath);
+                if (response.IsSuccessStatusCode)
+                {
+                    return true;
+                }
+                return false;
             }
-            return false;
+            catch
+            {
+                return false;
+            }
+            
         }
     }
 }

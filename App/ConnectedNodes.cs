@@ -130,7 +130,7 @@ namespace ServiceRegistry.ConnectedNodes
 
         public void AddConfiguration(string key, string value)
         {
-            if (key == null || value == null) return;
+            if ((key == null || value == null) || (key == "" || value == "")) return;
             configurations[key] = value;
         }
 

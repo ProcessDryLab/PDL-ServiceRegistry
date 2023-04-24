@@ -51,6 +51,19 @@ namespace ServiceRegistry.Endpoints
                 return Results.Ok(requestedHostsOnlineStatus);
             });
 
+            app.MapGet("config/filters", async (HttpRequest request) =>
+            {
+                var body = new StreamReader(request.Body);
+                string bodyString = await body.ReadToEndAsync();
+                Console.WriteLine("Filters: " + bodyString);
+
+                bool validRequest = bodyString.TryParseJson(out List<string> filters);
+                if (!validRequest || filters == null || filters.Count == 0) return Results.BadRequest($"Request body: {bodyString} is not a valid list");
+
+                return Results.Ok(filters); // TODO: get and return the configs
+
+            });
+
         }
     }
 }

@@ -3,6 +3,7 @@ using System;
 using ServiceRegistry.ConnectedNodes;
 using Newtonsoft.Json;
 using System.Collections.Specialized;
+//using ServiceRegistry.App;
 
 namespace ServiceRegistry.Requests
 {
@@ -56,6 +57,28 @@ namespace ServiceRegistry.Requests
                 return false;
             }
             
+        }
+
+        public static async void GetAndSaveConfig(string path)
+        {
+            string requestPath = path + "/configurations";
+            try
+            {
+                HttpResponseMessage response = await client.GetAsync(requestPath);
+                if (response.IsSuccessStatusCode)
+                {
+                    string config = await response.Content.ReadAsStringAsync(); 
+                    if(config != null && config != "") 
+                    {
+                        ConnectedNodes.ConnectedNodes.Instance.AddConfiguration(path, config); // TODO: Configurations aren't saved correctly. But response.Content.ReadAsStringAsync() returns the config.
+                    }
+                }
+                ConnectedNodes.ConnectedNodes.Instance.AddConfiguration(path, "");
+            }
+            catch
+            {
+                ConnectedNodes.ConnectedNodes.Instance.AddConfiguration(path, "");
+            }
         }
     }
 }

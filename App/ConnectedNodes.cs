@@ -2,6 +2,7 @@
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Xml.Linq;
 using ServiceRegistry.Requests;
+//using ServiceRegistry.App;
 
 namespace ServiceRegistry.ConnectedNodes
 {
@@ -10,7 +11,8 @@ namespace ServiceRegistry.ConnectedNodes
         private static ConnectedNodes? instance = null;
         static readonly string connectedMinersPath = Path.Combine(Directory.GetCurrentDirectory(), "connectedMiners.json");
         static readonly string connectedRepositoriesPath = Path.Combine(Directory.GetCurrentDirectory(), "connectedRepositories.json");  
-        private static Dictionary<string, Boolean> OnlineStatus = new Dictionary<string, Boolean>();   
+        private static Dictionary<string, Boolean> OnlineStatus = new Dictionary<string, Boolean>();
+        private static Dictionary<string, string> configurations = new Dictionary<string, string>();
 
         public static ConnectedNodes Instance
         {
@@ -90,19 +92,46 @@ namespace ServiceRegistry.ConnectedNodes
             GetList(NodeType.Miner).ForEach(async node =>
             {
                 OnlineStatus[node.HostName] = await Requests.Requests.GetPing(node.HostName);
-                //OnlineStatus.Add(node.HostName, await Requests.Requests.GetPing(node.HostName));
             });
 
             GetList(NodeType.Repository).ForEach(async node =>
             {
                 OnlineStatus[node.HostName] = await Requests.Requests.GetPing(node.HostName);
-                //OnlineStatus.Add(node.HostName, await Requests.Requests.GetPing(node.HostName));
             });
         }
 
         public Dictionary<string, Boolean> GetOnlineStatus()
         {
             return OnlineStatus;
+        }
+
+        public void GetAllConnectedHostConfig()
+        {
+
+            GetList(NodeType.Miner).ForEach(async node =>
+            {
+                Requests.Requests.GetAndSaveConfig(node.HostName);
+            });
+
+            GetList(NodeType.Repository).ForEach(async node =>
+            {
+                Requests.Requests.GetAndSaveConfig(node.HostName);
+            });
+
+            foreach(var item in GetConfigurations()){
+                Console.WriteLine(item.Key, item.Value);
+            }
+        }
+
+        public Dictionary<string, string> GetConfigurations()
+        {
+            return configurations;
+        }
+
+        public void AddConfiguration(string key, string value)
+        {
+            if (key == null || value == null) return;
+            configurations[key] = value;
         }
 
         //public List<Node> Filter(string filterParam)

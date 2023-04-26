@@ -13,25 +13,47 @@ namespace ServiceRegistry.Endpoints
         public Endpoints(WebApplication app)
         {
             // MINERS
+            // Get list of registered Miner URLs
             app.MapGet("/miners", (HttpContext httpContext) =>
             {
                 return JsonConvert.SerializeObject(ConnectedNodes.ConnectedNodes.Instance.GetRegisteredNodes(NodeType.Miner));
             });
-
+            // Add a new Miner URL
             app.MapPost("/miners", async (HttpRequest request) =>
             {
-                return await Requests.Requests.GetConfig(request);
+                var body = new StreamReader(request.Body);
+                string bodyString = await body.ReadToEndAsync();
+                return ConnectedNodes.ConnectedNodes.Instance.AddNode(bodyString, NodeType.Miner);
             });
+            // Remove a new Miner URL
+            app.MapDelete("/repositories", async (HttpRequest request) =>
+            {
+                var body = new StreamReader(request.Body);
+                string bodyString = await body.ReadToEndAsync();
+                return ConnectedNodes.ConnectedNodes.Instance.RemoveNode(bodyString, NodeType.Miner);
+            });
+
             // REPOSITORIES
+            // Get list of registered Repository URLs
             app.MapGet("/repositories", (HttpContext httpContext) =>
             {
                 return JsonConvert.SerializeObject(ConnectedNodes.ConnectedNodes.Instance.GetRegisteredNodes(NodeType.Repository));
             });
-
+            // Add a new Repository URL
             app.MapPost("/repositories", async (HttpRequest request) =>
             {
-                return await Requests.Requests.GetConfig(request);
+                var body = new StreamReader(request.Body);
+                string bodyString = await body.ReadToEndAsync();
+                return ConnectedNodes.ConnectedNodes.Instance.AddNode(bodyString, NodeType.Repository);
             });
+            // Remove a new Repository URL
+            app.MapDelete("/repositories", async (HttpRequest request) =>
+            {
+                var body = new StreamReader(request.Body);
+                string bodyString = await body.ReadToEndAsync();
+                return ConnectedNodes.ConnectedNodes.Instance.RemoveNode(bodyString, NodeType.Repository);
+            });
+
             // PING
             app.MapGet("ping", (HttpContext httpContext) =>
             {
@@ -64,8 +86,6 @@ namespace ServiceRegistry.Endpoints
                 var requestedNodeConfigs = filters.Where(filter => configurations.ContainsKey(filter)).Select(url => new { host = url, config = configurations[url] });
                 
                 string nodeConfigsString = JsonConvert.SerializeObject(requestedNodeConfigs, Formatting.Indented);
-
-                //return Results.Ok(requestedNodeConfigs);
                 return Results.Text(nodeConfigsString);
             });
 

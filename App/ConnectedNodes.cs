@@ -60,34 +60,29 @@ namespace ServiceRegistry.ConnectedNodes
             }
         }
 
-        public void AddNode(string nodeUrl, Node node)
-        {
-            var nodes = GetRegisteredNodes(node.Type);
-            nodes.Add(nodeUrl);
-            UpdateNodeFile(nodes, node.Type);
-        }
-        public void RemoveNode(string nodeUrl, NodeType type)
+        public IResult AddNode(string bodyString, NodeType type)
         {
             var nodes = GetRegisteredNodes(type);
-            nodes.Remove(nodeUrl);
+            bool validRequest = bodyString.TryParseJson(out Dictionary<string, string> bodyDict);
+            if (!validRequest || bodyDict == null || bodyDict["Host"] == null) return Results.BadRequest($"Request body: {bodyString} is missing a value for key: \"Host\"");
+
+            nodes.Add(bodyDict["Host"]);
             UpdateNodeFile(nodes, type);
+
+            return Results.Ok($"Repository {bodyDict["Host"]} successfully added");
         }
-        //public Node GetNode(string hostName, NodeType type)
-        //{
-        //    var nodes = GetRegisteredNodes(type);
-        //    return nodes[hostName];
-        //}
-        //public List<Node> GetList(NodeType type)
-        //{
-        //    List<Node> listOfNodes = new();
-        //    Dictionary<string, Node> nodes = GetRegisteredNodes(type);
-        //    foreach (var node in nodes)
-        //    {
-        //        node.Value.HostName = node.Key; // Adding host to the contents
-        //        listOfNodes.Add(node.Value);    // Adding updated 
-        //    }
-        //    return listOfNodes;
-        //}
+        public IResult RemoveNode(string bodyString, NodeType type)
+        {
+            var nodes = GetRegisteredNodes(type);
+            bool validRequest = bodyString.TryParseJson(out Dictionary<string, string> bodyDict);
+            if (!validRequest || bodyDict == null || bodyDict["Host"] == null) return Results.BadRequest($"Request body: {bodyString} is missing a value for key: \"Host\"");
+
+            if(!nodes.Contains(bodyDict["Host"])) return Results.BadRequest($"No node with URL {bodyDict["Host"]} exists");
+            nodes.Remove(bodyDict["Host"]);
+            UpdateNodeFile(nodes, type);
+
+            return Results.Ok($"Repository {bodyDict["Host"]} successfully removed");
+        }
 
         public void UpdateOnlineStatus()
         {
@@ -132,23 +127,8 @@ namespace ServiceRegistry.ConnectedNodes
         {
             if ((key == null || value == null) || (key == "")) return;
             configurations[key] = value;
-
             //Console.WriteLine($"ConnectedNodes:\nnodeUrl: {key}\nconfig{configurations[key]}");
         }
-
-        //public List<Node> Filter(string filterParam)
-        //{
-        //    //return Instance.nodes.Where(n => n.Value.type == filterParam).ToDictionary(n => n.Key, n => n.Value);
-
-        //    List<Node> listOfNodes = new List<Node>();
-
-        //    foreach (KeyValuePair<string, Node> entry in Instance.repositoryNodes.Where(n => n.Value.type == filterParam).ToDictionary(n => n.Key, n => n.Value))
-        //    {
-        //        // do something with entry.Value or entry.Key
-        //        listOfNodes.Add(entry.Value);
-        //    }
-        //    return listOfNodes;
-        //}
     }
     #region extensionMethods
     public static class ExtensionClass

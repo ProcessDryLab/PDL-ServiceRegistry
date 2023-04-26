@@ -67,8 +67,12 @@ namespace ServiceRegistry.ConnectedNodes
             if (!validRequest || bodyDict == null || bodyDict["Host"] == null) return Results.BadRequest($"Request body: {bodyString} is missing a value for key: \"Host\"");
 
             string nodeUrl = bodyDict["Host"]; // TODO: Consider deserializing this body to avoid problems with capitalized letters
-            nodes.Add(nodeUrl);
-            UpdateNodeFile(nodes, type);
+            
+            if (!nodes.Contains(nodeUrl)) // We only add nodes to the file if they don't exist. Overwriting config is fine.
+            {
+                nodes.Add(nodeUrl);
+                UpdateNodeFile(nodes, type);
+            }
 
             string configString = await Requests.Requests.GetConfigFromNode(nodeUrl);
             bool configFetched = AddConfiguration(nodeUrl, configString);
@@ -86,6 +90,8 @@ namespace ServiceRegistry.ConnectedNodes
             if (!nodes.Contains(nodeUrl)) return Results.BadRequest($"No node with URL {nodeUrl} exists");
             nodes.Remove(nodeUrl);
             UpdateNodeFile(nodes, type);
+            configurations.Remove(nodeUrl);
+            onlineStatus.Remove(nodeUrl);
 
             return Results.Ok($"Repository {nodeUrl} successfully removed");
         }
@@ -95,13 +101,11 @@ namespace ServiceRegistry.ConnectedNodes
             GetRegisteredNodes(NodeType.Miner).ForEach(async nodeUrl =>
             {
                 onlineStatus[nodeUrl] = await Requests.Requests.GetPing(nodeUrl);
-                //Console.WriteLine($"Node with URL {nodeUrl} connection status: {onlineStatus[nodeUrl]}");
             });
 
             GetRegisteredNodes(NodeType.Repository).ForEach(async nodeUrl =>
             {
                 onlineStatus[nodeUrl] = await Requests.Requests.GetPing(nodeUrl);
-                //Console.WriteLine($"Node with URL {nodeUrl} connection status: {onlineStatus[nodeUrl]}");
             });
         }
 
@@ -136,7 +140,6 @@ namespace ServiceRegistry.ConnectedNodes
             if (string.IsNullOrWhiteSpace(nodeUrl) || string.IsNullOrWhiteSpace(configString)) return false;
             JToken config = JToken.Parse(configString);
             configurations[nodeUrl] = config;
-            //Console.WriteLine($"ConnectedNodes:\nnodeUrl: {key}\nconfig{configurations[key]}");
             return true;
         }
     }

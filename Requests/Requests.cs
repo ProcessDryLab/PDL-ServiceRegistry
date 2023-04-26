@@ -1,6 +1,5 @@
 ﻿using System.Text;
 using System;
-using ServiceRegistry.ConnectedNodes;
 using Newtonsoft.Json;
 using System.Collections.Specialized;
 using Newtonsoft.Json.Linq;
@@ -30,7 +29,7 @@ namespace ServiceRegistry.Requests
             
         }
 
-        public static async void GetAndSaveConfig(string nodeUrl)
+        public static async Task<string> GetConfigFromNode(string nodeUrl)
         {
             string requestPath = nodeUrl + "/configurations";
             try
@@ -39,17 +38,13 @@ namespace ServiceRegistry.Requests
                 if (response.IsSuccessStatusCode)
                 {
                     string configString = await response.Content.ReadAsStringAsync();
-                    JToken config = JToken.Parse(configString);
-                    if(config != null) 
-                    {
-                        ConnectedNodes.ConnectedNodes.Instance.AddConfiguration(nodeUrl, config);
-                        //Console.WriteLine($"ConnectedNodes:\nnodeUrl: {nodeUrl}\nconfig{config}");
-                    }
+                    return configString;
                 }
+                return "";
             }
             catch
             {
-                ConnectedNodes.ConnectedNodes.Instance.AddConfiguration(nodeUrl, "");
+                return "";
             }
         }
     }

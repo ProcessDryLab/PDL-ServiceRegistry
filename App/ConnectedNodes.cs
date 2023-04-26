@@ -60,7 +60,7 @@ namespace ServiceRegistry.ConnectedNodes
             }
         }
 
-        public IResult AddNode(string bodyString, NodeType type)
+        public async Task<IResult> AddNode(string bodyString, NodeType type)
         {
             var nodes = GetRegisteredNodes(type);
             bool validRequest = bodyString.TryParseJson(out Dictionary<string, string> bodyDict);
@@ -69,7 +69,10 @@ namespace ServiceRegistry.ConnectedNodes
             string nodeUrl = bodyDict["Host"]; // TODO: Consider deserializing this body to avoid problems with capitalized letters
             nodes.Add(nodeUrl);
             UpdateNodeFile(nodes, type);
-            Requests.Requests.GetAndSaveConfig(nodeUrl);
+
+            string configString = await Requests.Requests.GetConfigFromNode(nodeUrl);
+            JToken config = JToken.Parse(configString);
+            AddConfiguration(nodeUrl, config);
 
             return Results.Ok($"Repository {nodeUrl} successfully added");
         }
@@ -112,12 +115,16 @@ namespace ServiceRegistry.ConnectedNodes
 
             GetRegisteredNodes(NodeType.Miner).ForEach(async nodeUrl =>
             {
-                Requests.Requests.GetAndSaveConfig(nodeUrl);
+                string configString = await Requests.Requests.GetConfigFromNode(nodeUrl);
+                JToken config = JToken.Parse(configString);
+                AddConfiguration(nodeUrl, config);
             });
 
             GetRegisteredNodes(NodeType.Repository).ForEach(async nodeUrl =>
             {
-                Requests.Requests.GetAndSaveConfig(nodeUrl);
+                string configString = await Requests.Requests.GetConfigFromNode(nodeUrl);
+                JToken config = JToken.Parse(configString);
+                AddConfiguration(nodeUrl, config);
             });
         }
 

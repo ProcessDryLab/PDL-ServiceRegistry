@@ -23,7 +23,7 @@ namespace ServiceRegistry.Endpoints
             {
                 var body = new StreamReader(request.Body);
                 string bodyString = await body.ReadToEndAsync();
-                return ConnectedNodes.ConnectedNodes.Instance.AddNode(bodyString, NodeType.Miner);
+                return await ConnectedNodes.ConnectedNodes.Instance.AddNode(bodyString, NodeType.Miner);
             });
             // Remove a new Miner URL
             app.MapDelete("/repositories", async (HttpRequest request) =>
@@ -44,7 +44,7 @@ namespace ServiceRegistry.Endpoints
             {
                 var body = new StreamReader(request.Body);
                 string bodyString = await body.ReadToEndAsync();
-                return ConnectedNodes.ConnectedNodes.Instance.AddNode(bodyString, NodeType.Repository);
+                return await ConnectedNodes.ConnectedNodes.Instance.AddNode(bodyString, NodeType.Repository);
             });
             // Remove a new Repository URL
             app.MapDelete("/repositories", async (HttpRequest request) =>

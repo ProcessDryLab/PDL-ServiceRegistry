@@ -93,13 +93,13 @@ namespace ServiceRegistry.ConnectedNodes
             GetRegisteredNodes(NodeType.Miner).ForEach(async nodeUrl =>
             {
                 onlineStatus[nodeUrl] = await Requests.Requests.GetPing(nodeUrl);
-                Console.WriteLine($"Node with URL {nodeUrl} connection status: {onlineStatus[nodeUrl]}");
+                //Console.WriteLine($"Node with URL {nodeUrl} connection status: {onlineStatus[nodeUrl]}");
             });
 
             GetRegisteredNodes(NodeType.Repository).ForEach(async nodeUrl =>
             {
                 onlineStatus[nodeUrl] = await Requests.Requests.GetPing(nodeUrl);
-                Console.WriteLine($"Node with URL {nodeUrl} connection status: {onlineStatus[nodeUrl]}");
+                //Console.WriteLine($"Node with URL {nodeUrl} connection status: {onlineStatus[nodeUrl]}");
             });
         }
 
@@ -120,10 +120,6 @@ namespace ServiceRegistry.ConnectedNodes
             {
                 Requests.Requests.GetAndSaveConfig(nodeUrl);
             });
-
-            foreach(var item in GetConfigurations()){
-                Console.WriteLine(item.Key, item.Value);
-            }
         }
 
         public Dictionary<string, string> GetConfigurations()
@@ -136,7 +132,7 @@ namespace ServiceRegistry.ConnectedNodes
             if ((key == null || value == null) || (key == "" || value == "")) return;
             configurations[key] = value;
 
-            Console.WriteLine($"ConnectedNodes:\nnodeUrl: {key}\nconfig{configurations[key]}");
+            //Console.WriteLine($"ConnectedNodes:\nnodeUrl: {key}\nconfig{configurations[key]}");
         }
 
         //public List<Node> Filter(string filterParam)

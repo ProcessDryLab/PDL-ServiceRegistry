@@ -42,9 +42,10 @@ namespace ServiceRegistry.Endpoints
             {
                 var body = new StreamReader(request.Body);
                 string bodyString = await body.ReadToEndAsync();
+
                 bool validRequest = bodyString.TryParseJson(out List<string> filters);
                 if (!validRequest || filters == null || filters.Count == 0) return Results.BadRequest($"Request body: {bodyString} is not a valid list");
-
+                
                 var onlineStatus = ConnectedNodes.ConnectedNodes.Instance.GetOnlineStatus();
                 var requestedNodeUrls = filters.Where(key => onlineStatus.ContainsKey(key)).Select(k => new { host = k, status = onlineStatus[k] });
 
@@ -55,15 +56,14 @@ namespace ServiceRegistry.Endpoints
             {
                 var body = new StreamReader(request.Body);
                 string bodyString = await body.ReadToEndAsync();
-                Console.WriteLine("Filters: " + bodyString);
 
                 bool validRequest = bodyString.TryParseJson(out List<string> filters);
                 if (!validRequest || filters == null || filters.Count == 0) return Results.BadRequest($"Request body: {bodyString} is not a valid list");
-
+                
                 var configurations = ConnectedNodes.ConnectedNodes.Instance.GetConfigurations();
-                var requestedNodeConfigs = filters.Where(key => configurations.ContainsKey(key)).Select(k => new { host = k, config = configurations[k] });
-
-                return Results.Ok(requestedNodeConfigs); // TODO: get and return the configs
+                var requestedNodeConfigs = filters.Where(filter => configurations.ContainsKey(filter)).Select(url => new { host = url, config = configurations[url] });
+                
+                return Results.Ok(requestedNodeConfigs);
             });
 
         }

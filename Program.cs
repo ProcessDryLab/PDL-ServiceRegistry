@@ -63,7 +63,7 @@ namespace ServiceRegistry
                 }
             });
 
-            ConnectedNodes.ConnectedNodes.Instance.GetAllConnectedHostConfig();
+            //ConnectedNodes.ConnectedNodes.Instance.GetAllConnectedHostConfig();
 
             updateStatusThread.IsBackground = true;
             updateStatusThread.Start();

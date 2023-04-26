@@ -3,6 +3,7 @@ using System;
 using ServiceRegistry.ConnectedNodes;
 using Newtonsoft.Json;
 using System.Collections.Specialized;
+using Newtonsoft.Json.Linq;
 //using ServiceRegistry.App;
 
 namespace ServiceRegistry.Requests
@@ -67,14 +68,16 @@ namespace ServiceRegistry.Requests
                 HttpResponseMessage response = await client.GetAsync(requestPath);
                 if (response.IsSuccessStatusCode)
                 {
-                    string config = await response.Content.ReadAsStringAsync(); 
-                    if(config != null && config != "") 
+                    string configString = await response.Content.ReadAsStringAsync();
+                    //Console.WriteLine("configString: " + configString);
+                    JToken config = JToken.Parse(configString);
+                    if(config != null) 
                     {
                         ConnectedNodes.ConnectedNodes.Instance.AddConfiguration(nodeUrl, config); // TODO: Configurations aren't saved correctly. But response.Content.ReadAsStringAsync() returns the config.
-                        //Console.WriteLine($"ConnectedNodes:\nnodeUrl: {nodeUrl}\nconfig{config}");
+                        Console.WriteLine($"ConnectedNodes:\nnodeUrl: {nodeUrl}\nconfig{config}");
                     }
                 }
-                ConnectedNodes.ConnectedNodes.Instance.AddConfiguration(nodeUrl, "");
+                //ConnectedNodes.ConnectedNodes.Instance.AddConfiguration(nodeUrl, "");
             }
             catch
             {

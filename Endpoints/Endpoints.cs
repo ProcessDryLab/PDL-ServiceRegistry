@@ -63,7 +63,10 @@ namespace ServiceRegistry.Endpoints
                 var configurations = ConnectedNodes.ConnectedNodes.Instance.GetConfigurations();
                 var requestedNodeConfigs = filters.Where(filter => configurations.ContainsKey(filter)).Select(url => new { host = url, config = configurations[url] });
                 
-                return Results.Ok(requestedNodeConfigs);
+                string nodeConfigsString = JsonConvert.SerializeObject(requestedNodeConfigs, Formatting.Indented);
+
+                //return Results.Ok(requestedNodeConfigs);
+                return Results.Text(nodeConfigsString);
             });
 
         }

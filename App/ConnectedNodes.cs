@@ -2,6 +2,7 @@
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Xml.Linq;
 using ServiceRegistry.Requests;
+using Newtonsoft.Json.Linq;
 //using ServiceRegistry.App;
 
 namespace ServiceRegistry.ConnectedNodes
@@ -12,7 +13,7 @@ namespace ServiceRegistry.ConnectedNodes
         static readonly string connectedMinersPath = Path.Combine(Directory.GetCurrentDirectory(), "connectedMiners.json");
         static readonly string connectedRepositoriesPath = Path.Combine(Directory.GetCurrentDirectory(), "connectedRepositories.json");  
         private static Dictionary<string, Boolean> onlineStatus = new();
-        private static Dictionary<string, string> configurations = new();
+        private static Dictionary<string, JToken> configurations = new();
 
         public static ConnectedNodes Instance
         {
@@ -122,14 +123,14 @@ namespace ServiceRegistry.ConnectedNodes
             });
         }
 
-        public Dictionary<string, string> GetConfigurations()
+        public Dictionary<string, JToken> GetConfigurations()
         {
             return configurations;
         }
 
-        public void AddConfiguration(string key, string value)
+        public void AddConfiguration(string key, JToken value)
         {
-            if ((key == null || value == null) || (key == "" || value == "")) return;
+            if ((key == null || value == null) || (key == "")) return;
             configurations[key] = value;
 
             //Console.WriteLine($"ConnectedNodes:\nnodeUrl: {key}\nconfig{configurations[key]}");

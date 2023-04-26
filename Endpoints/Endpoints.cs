@@ -26,7 +26,7 @@ namespace ServiceRegistry.Endpoints
                 return await ConnectedNodes.ConnectedNodes.Instance.AddNode(bodyString, NodeType.Miner);
             });
             // Remove a new Miner URL
-            app.MapDelete("/repositories", async (HttpRequest request) =>
+            app.MapDelete("/miners", async (HttpRequest request) =>
             {
                 var body = new StreamReader(request.Body);
                 string bodyString = await body.ReadToEndAsync();

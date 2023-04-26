@@ -71,10 +71,10 @@ namespace ServiceRegistry.ConnectedNodes
             UpdateNodeFile(nodes, type);
 
             string configString = await Requests.Requests.GetConfigFromNode(nodeUrl);
-            JToken config = JToken.Parse(configString);
-            AddConfiguration(nodeUrl, config);
+            bool configFetched = AddConfiguration(nodeUrl, configString);
+            if(!configFetched) return Results.Ok($"Node {nodeUrl} added but unable to get config.");
 
-            return Results.Ok($"Repository {nodeUrl} successfully added");
+            return Results.Ok($"Node {nodeUrl} successfully added");
         }
         public IResult RemoveNode(string bodyString, NodeType type)
         {
@@ -116,15 +116,13 @@ namespace ServiceRegistry.ConnectedNodes
             GetRegisteredNodes(NodeType.Miner).ForEach(async nodeUrl =>
             {
                 string configString = await Requests.Requests.GetConfigFromNode(nodeUrl);
-                JToken config = JToken.Parse(configString);
-                AddConfiguration(nodeUrl, config);
+                AddConfiguration(nodeUrl, configString);
             });
 
             GetRegisteredNodes(NodeType.Repository).ForEach(async nodeUrl =>
             {
                 string configString = await Requests.Requests.GetConfigFromNode(nodeUrl);
-                JToken config = JToken.Parse(configString);
-                AddConfiguration(nodeUrl, config);
+                AddConfiguration(nodeUrl, configString);
             });
         }
 
@@ -133,11 +131,13 @@ namespace ServiceRegistry.ConnectedNodes
             return configurations;
         }
 
-        public void AddConfiguration(string key, JToken value)
+        public bool AddConfiguration(string nodeUrl, string configString)
         {
-            if ((key == null || value == null) || (key == "")) return;
-            configurations[key] = value;
+            if (string.IsNullOrWhiteSpace(nodeUrl) || string.IsNullOrWhiteSpace(configString)) return false;
+            JToken config = JToken.Parse(configString);
+            configurations[nodeUrl] = config;
             //Console.WriteLine($"ConnectedNodes:\nnodeUrl: {key}\nconfig{configurations[key]}");
+            return true;
         }
     }
     #region extensionMethods

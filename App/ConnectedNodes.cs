@@ -11,8 +11,8 @@ namespace ServiceRegistry.ConnectedNodes
         private static ConnectedNodes? instance = null;
         static readonly string connectedMinersPath = Path.Combine(Directory.GetCurrentDirectory(), "connectedMiners.json");
         static readonly string connectedRepositoriesPath = Path.Combine(Directory.GetCurrentDirectory(), "connectedRepositories.json");  
-        private static Dictionary<string, Boolean> OnlineStatus = new Dictionary<string, Boolean>();
-        private static Dictionary<string, string> configurations = new Dictionary<string, string>();
+        private static Dictionary<string, Boolean> onlineStatus = new();
+        private static Dictionary<string, string> configurations = new();
 
         public static ConnectedNodes Instance
         {
@@ -26,28 +26,29 @@ namespace ServiceRegistry.ConnectedNodes
             }
         }
 
-        private static Dictionary<string, Node> GetConnectedNodes(string pathToFile)
+        private static List<string> GetRegisteredNodes(string pathToFile)
         {
             string fileAsString = File.ReadAllText(pathToFile);
-            Dictionary<string, Node>? nodes = JsonConvert.DeserializeObject<Dictionary<string, Node>>(fileAsString);
-            nodes ??= new Dictionary<string, Node>();
-            return nodes;
+            List<string> nodeUrls = JsonConvert.DeserializeObject<List<string>>(fileAsString);
+            //Dictionary<string, Node>? nodes = JsonConvert.DeserializeObject<Dictionary<string, Node>>(fileAsString);
+            nodeUrls ??= new List<string>();
+            return nodeUrls;
         }
-        private static Dictionary<string, Node> GetConnectedNodes(NodeType type)
+        public List<string> GetRegisteredNodes(NodeType type)
         {
             if (type == NodeType.Miner)
             {
-                return GetConnectedNodes(connectedMinersPath);
+                return GetRegisteredNodes(connectedMinersPath);
             }
             if (type == NodeType.Repository)
             {
-                return GetConnectedNodes(connectedRepositoriesPath);
+                return GetRegisteredNodes(connectedRepositoriesPath);
             }
             else return null;
         }
-        private static void UpdateConnectedNodes(Dictionary<string, Node> nodes, NodeType type)
+        private static void UpdateNodeFile(List<string> nodeUrls, NodeType type)
         {
-            string updatedNodesString = JsonConvert.SerializeObject(nodes, Formatting.Indented);
+            string updatedNodesString = JsonConvert.SerializeObject(nodeUrls, Formatting.Indented);
             if (type == NodeType.Miner)
             {
                 File.WriteAllText(connectedMinersPath, updatedNodesString);
@@ -58,64 +59,66 @@ namespace ServiceRegistry.ConnectedNodes
             }
         }
 
-        public void AddNode(string hostName, Node node)
+        public void AddNode(string nodeUrl, Node node)
         {
-            var nodes = GetConnectedNodes(node.Type);
-            nodes.Add(hostName, node);
-            UpdateConnectedNodes(nodes, node.Type);
+            var nodes = GetRegisteredNodes(node.Type);
+            nodes.Add(nodeUrl);
+            UpdateNodeFile(nodes, node.Type);
         }
-        public void RemoveNode(string hostName, NodeType type)
+        public void RemoveNode(string nodeUrl, NodeType type)
         {
-            var nodes = GetConnectedNodes(type);
-            nodes.Remove(hostName);
-            UpdateConnectedNodes(nodes, type);
+            var nodes = GetRegisteredNodes(type);
+            nodes.Remove(nodeUrl);
+            UpdateNodeFile(nodes, type);
         }
-        public Node GetNode(string hostName, NodeType type)
-        {
-            var nodes = GetConnectedNodes(type);
-            return nodes[hostName];
-        }
-        public List<Node> GetList(NodeType type)
-        {
-            List<Node> listOfNodes = new();
-            Dictionary<string, Node> nodes = GetConnectedNodes(type);
-            foreach (var node in nodes)
-            {
-                node.Value.HostName = node.Key; // Adding host to the contents
-                listOfNodes.Add(node.Value);    // Adding updated 
-            }
-            return listOfNodes;
-        }
+        //public Node GetNode(string hostName, NodeType type)
+        //{
+        //    var nodes = GetRegisteredNodes(type);
+        //    return nodes[hostName];
+        //}
+        //public List<Node> GetList(NodeType type)
+        //{
+        //    List<Node> listOfNodes = new();
+        //    Dictionary<string, Node> nodes = GetRegisteredNodes(type);
+        //    foreach (var node in nodes)
+        //    {
+        //        node.Value.HostName = node.Key; // Adding host to the contents
+        //        listOfNodes.Add(node.Value);    // Adding updated 
+        //    }
+        //    return listOfNodes;
+        //}
 
         public void UpdateOnlineStatus()
         {
-            GetList(NodeType.Miner).ForEach(async node =>
+            GetRegisteredNodes(NodeType.Miner).ForEach(async nodeUrl =>
             {
-                OnlineStatus[node.HostName] = await Requests.Requests.GetPing(node.HostName);
+                onlineStatus[nodeUrl] = await Requests.Requests.GetPing(nodeUrl);
+                Console.WriteLine($"Node with URL {nodeUrl} connection status: {onlineStatus[nodeUrl]}");
             });
 
-            GetList(NodeType.Repository).ForEach(async node =>
+            GetRegisteredNodes(NodeType.Repository).ForEach(async nodeUrl =>
             {
-                OnlineStatus[node.HostName] = await Requests.Requests.GetPing(node.HostName);
+                onlineStatus[nodeUrl] = await Requests.Requests.GetPing(nodeUrl);
+                Console.WriteLine($"Node with URL {nodeUrl} connection status: {onlineStatus[nodeUrl]}");
             });
         }
 
         public Dictionary<string, Boolean> GetOnlineStatus()
         {
-            return OnlineStatus;
+            return onlineStatus;
         }
 
         public void GetAllConnectedHostConfig()
         {
 
-            GetList(NodeType.Miner).ForEach(async node =>
+            GetRegisteredNodes(NodeType.Miner).ForEach(async nodeUrl =>
             {
-                Requests.Requests.GetAndSaveConfig(node.HostName);
+                Requests.Requests.GetAndSaveConfig(nodeUrl);
             });
 
-            GetList(NodeType.Repository).ForEach(async node =>
+            GetRegisteredNodes(NodeType.Repository).ForEach(async nodeUrl =>
             {
-                Requests.Requests.GetAndSaveConfig(node.HostName);
+                Requests.Requests.GetAndSaveConfig(nodeUrl);
             });
 
             foreach(var item in GetConfigurations()){
@@ -132,6 +135,8 @@ namespace ServiceRegistry.ConnectedNodes
         {
             if ((key == null || value == null) || (key == "" || value == "")) return;
             configurations[key] = value;
+
+            Console.WriteLine($"ConnectedNodes:\nnodeUrl: {key}\nconfig{configurations[key]}");
         }
 
         //public List<Node> Filter(string filterParam)

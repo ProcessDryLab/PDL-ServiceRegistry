@@ -15,7 +15,7 @@ namespace ServiceRegistry.Endpoints
             // MINERS
             app.MapGet("/miners", (HttpContext httpContext) =>
             {
-                return JsonConvert.SerializeObject(ConnectedNodes.ConnectedNodes.Instance.GetList(NodeType.Miner));
+                return JsonConvert.SerializeObject(ConnectedNodes.ConnectedNodes.Instance.GetRegisteredNodes(NodeType.Miner));
             });
 
             app.MapPost("/miners", async (HttpRequest request) =>
@@ -25,7 +25,7 @@ namespace ServiceRegistry.Endpoints
             // REPOSITORIES
             app.MapGet("/repositories", (HttpContext httpContext) =>
             {
-                return JsonConvert.SerializeObject(ConnectedNodes.ConnectedNodes.Instance.GetList(NodeType.Repository));
+                return JsonConvert.SerializeObject(ConnectedNodes.ConnectedNodes.Instance.GetRegisteredNodes(NodeType.Repository));
             });
 
             app.MapPost("/repositories", async (HttpRequest request) =>
@@ -42,16 +42,16 @@ namespace ServiceRegistry.Endpoints
             {
                 var body = new StreamReader(request.Body);
                 string bodyString = await body.ReadToEndAsync();
-                bool validRequest = bodyString.TryParseJson(out List<string> requestedHostsList);
-                if (!validRequest) return Results.BadRequest($"Request body: {bodyString} is not a valid list");
+                bool validRequest = bodyString.TryParseJson(out List<string> filters);
+                if (!validRequest || filters == null || filters.Count == 0) return Results.BadRequest($"Request body: {bodyString} is not a valid list");
 
-                var OnlineStatus = ConnectedNodes.ConnectedNodes.Instance.GetOnlineStatus();
-                var requestedHostsOnlineStatus = requestedHostsList.Where(key => OnlineStatus.ContainsKey(key)).Select(k => new { host = k, status = OnlineStatus[k] });
+                var onlineStatus = ConnectedNodes.ConnectedNodes.Instance.GetOnlineStatus();
+                var requestedNodeUrls = filters.Where(key => onlineStatus.ContainsKey(key)).Select(k => new { host = k, status = onlineStatus[k] });
 
-                return Results.Ok(requestedHostsOnlineStatus);
+                return Results.Ok(requestedNodeUrls);
             });
 
-            app.MapGet("config/filters", async (HttpRequest request) =>
+            app.MapPost("config/filters", async (HttpRequest request) =>
             {
                 var body = new StreamReader(request.Body);
                 string bodyString = await body.ReadToEndAsync();
@@ -60,8 +60,10 @@ namespace ServiceRegistry.Endpoints
                 bool validRequest = bodyString.TryParseJson(out List<string> filters);
                 if (!validRequest || filters == null || filters.Count == 0) return Results.BadRequest($"Request body: {bodyString} is not a valid list");
 
-                return Results.Ok(filters); // TODO: get and return the configs
+                var configurations = ConnectedNodes.ConnectedNodes.Instance.GetConfigurations();
+                var requestedNodeConfigs = filters.Where(key => configurations.ContainsKey(key)).Select(k => new { host = k, config = configurations[k] });
 
+                return Results.Ok(requestedNodeConfigs); // TODO: get and return the configs
             });
 
         }

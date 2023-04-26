@@ -7,6 +7,9 @@ namespace ServiceRegistry
     {
         public static void Main(string[] args)
         {
+            int pingTime = 1000; // 1 sec
+            int configUpdateTime = 10000; // 10 sec TODO: Increase to once every 24 hours when we're done.
+
             var builder = WebApplication.CreateBuilder(args);
 
             if (builder.Environment.IsDevelopment()) builder.WebHost.UseUrls("https://localhost:3000");
@@ -47,7 +50,7 @@ namespace ServiceRegistry
                 while (true)
                 {
                     ConnectedNodes.ConnectedNodes.Instance.UpdateOnlineStatus();
-                    Thread.Sleep(1000);
+                    Thread.Sleep(pingTime);
                 }
             });
 
@@ -56,7 +59,7 @@ namespace ServiceRegistry
                 while (true)
                 {
                     ConnectedNodes.ConnectedNodes.Instance.GetAllConnectedHostConfig();
-                    Thread.Sleep(10000);
+                    Thread.Sleep(configUpdateTime);
                 }
             });
 

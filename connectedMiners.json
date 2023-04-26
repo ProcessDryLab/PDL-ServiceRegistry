@@ -1,18 +1,21 @@
-{
-  "minerUrl": {
-    "Label": "PaliaMiner",
-    "Type": "Miner",
-    "Access": "Public",
-    "Parameters": [
-      {
-        "Type": "bool",
-        "Value": "true"
-      }
-    ]
-  },
-  "http://localhost:5000": {
-    "Label": "Alfa Miner",
-    "Type": "Miner",
-    "Access": "Public"
-  }
-}
+[
+  "http://localhost:5000"
+]
+//{
+//  "minerUrl": {
+//    "Label": "PaliaMiner",
+//    "Type": "Miner",
+//    "Access": "Public",
+//    "Parameters": [
+//      {
+//        "Type": "bool",
+//        "Value": "true"
+//      }
+//    ]
+//  },
+//  "http://localhost:5000": {
+//    "Label": "Alfa Miner",
+//    "Type": "Miner",
+//    "Access": "Public"
+//  }
+//}

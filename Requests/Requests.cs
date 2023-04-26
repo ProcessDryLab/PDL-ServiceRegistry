@@ -59,9 +59,9 @@ namespace ServiceRegistry.Requests
             
         }
 
-        public static async void GetAndSaveConfig(string path)
+        public static async void GetAndSaveConfig(string nodeUrl)
         {
-            string requestPath = path + "/configurations";
+            string requestPath = nodeUrl + "/configurations";
             try
             {
                 HttpResponseMessage response = await client.GetAsync(requestPath);
@@ -70,14 +70,15 @@ namespace ServiceRegistry.Requests
                     string config = await response.Content.ReadAsStringAsync(); 
                     if(config != null && config != "") 
                     {
-                        ConnectedNodes.ConnectedNodes.Instance.AddConfiguration(path, config); // TODO: Configurations aren't saved correctly. But response.Content.ReadAsStringAsync() returns the config.
+                        ConnectedNodes.ConnectedNodes.Instance.AddConfiguration(nodeUrl, config); // TODO: Configurations aren't saved correctly. But response.Content.ReadAsStringAsync() returns the config.
+                        //Console.WriteLine($"ConnectedNodes:\nnodeUrl: {nodeUrl}\nconfig{config}");
                     }
                 }
-                ConnectedNodes.ConnectedNodes.Instance.AddConfiguration(path, "");
+                ConnectedNodes.ConnectedNodes.Instance.AddConfiguration(nodeUrl, "");
             }
             catch
             {
-                ConnectedNodes.ConnectedNodes.Instance.AddConfiguration(path, "");
+                ConnectedNodes.ConnectedNodes.Instance.AddConfiguration(nodeUrl, "");
             }
         }
     }

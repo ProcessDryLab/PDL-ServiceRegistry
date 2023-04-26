@@ -66,10 +66,12 @@ namespace ServiceRegistry.ConnectedNodes
             bool validRequest = bodyString.TryParseJson(out Dictionary<string, string> bodyDict);
             if (!validRequest || bodyDict == null || bodyDict["Host"] == null) return Results.BadRequest($"Request body: {bodyString} is missing a value for key: \"Host\"");
 
-            nodes.Add(bodyDict["Host"]);
+            string nodeUrl = bodyDict["Host"]; // TODO: Consider deserializing this body to avoid problems with capitalized letters
+            nodes.Add(nodeUrl);
             UpdateNodeFile(nodes, type);
+            Requests.Requests.GetAndSaveConfig(nodeUrl);
 
-            return Results.Ok($"Repository {bodyDict["Host"]} successfully added");
+            return Results.Ok($"Repository {nodeUrl} successfully added");
         }
         public IResult RemoveNode(string bodyString, NodeType type)
         {
@@ -77,11 +79,12 @@ namespace ServiceRegistry.ConnectedNodes
             bool validRequest = bodyString.TryParseJson(out Dictionary<string, string> bodyDict);
             if (!validRequest || bodyDict == null || bodyDict["Host"] == null) return Results.BadRequest($"Request body: {bodyString} is missing a value for key: \"Host\"");
 
-            if(!nodes.Contains(bodyDict["Host"])) return Results.BadRequest($"No node with URL {bodyDict["Host"]} exists");
-            nodes.Remove(bodyDict["Host"]);
+            string nodeUrl = bodyDict["Host"]; // TODO: Consider deserializing this body to avoid problems with capitalized letters
+            if (!nodes.Contains(nodeUrl)) return Results.BadRequest($"No node with URL {nodeUrl} exists");
+            nodes.Remove(nodeUrl);
             UpdateNodeFile(nodes, type);
 
-            return Results.Ok($"Repository {bodyDict["Host"]} successfully removed");
+            return Results.Ok($"Repository {nodeUrl} successfully removed");
         }
 
         public void UpdateOnlineStatus()

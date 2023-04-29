@@ -11,8 +11,11 @@ namespace ServiceRegistry
             int configUpdateTime = 10000; // 10 sec TODO: Increase to once every 24 hours when we're done.
 
             var builder = WebApplication.CreateBuilder(args);
-
-            if (builder.Environment.IsDevelopment()) builder.WebHost.UseUrls("https://localhost:3000");
+            if (builder.Environment.IsDevelopment())
+            {
+                Console.WriteLine("Environment.IsDevelopment");
+                builder.WebHost.UseUrls("https://localhost:3000");
+            }
 
             // Add services to the container.
             builder.Services.AddAuthorization();

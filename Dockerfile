@@ -2,8 +2,14 @@
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS base
 WORKDIR /app
-EXPOSE 80
+EXPOSE 3000
 EXPOSE 443
+EXPOSE 5293
+EXPOSE 7037
+EXPOSE 45758
+EXPOSE 44386
+
+ENV ASPNETCORE_URLS=http://*:3000
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src

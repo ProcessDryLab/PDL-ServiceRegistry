@@ -12,6 +12,7 @@ namespace ServiceRegistry.Endpoints
     {
         public Endpoints(WebApplication app)
         {
+            app.MapGet("/", () => "Hello World!");
             // MINERS
             // Get list of registered Miner URLs
             app.MapGet("/miners", (HttpContext httpContext) =>

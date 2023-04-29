@@ -8,6 +8,6 @@ To build the docker image run, download docker from https://www.docker.com/produ
 Run the following commands from the project root to build an image and run it. 
 
 ```
-docker build -t dockerrepository .
-docker run -d -p 4000:80 --name Repository dockerrepository
+docker build -t dockerserviceregistry .
+docker run -d -p 3000:3000 --name serviceregistry dockerserviceregistry
 ```

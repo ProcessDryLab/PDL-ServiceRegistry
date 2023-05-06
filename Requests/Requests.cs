@@ -38,6 +38,7 @@ namespace ServiceRegistry.Requests
                 if (response.IsSuccessStatusCode)
                 {
                     string configString = await response.Content.ReadAsStringAsync();
+                    Console.WriteLine("Getting config from " + requestPath + " with status code: " + response.IsSuccessStatusCode);
                     return configString;
                 }
                 return "";

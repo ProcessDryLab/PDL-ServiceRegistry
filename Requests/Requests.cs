@@ -34,6 +34,11 @@ namespace ServiceRegistry.Requests
             string requestPath = nodeUrl + "/configurations";
             try
             {
+                Console.WriteLine("Requesting config from: " + requestPath);
+
+                //var message = new HttpRequestMessage(HttpMethod.Get, requestPath) { Version = new Version(2, 0) };
+                //var response = await client.SendAsync(message);
+
                 HttpResponseMessage response = await client.GetAsync(requestPath);
                 if (response.IsSuccessStatusCode)
                 {
@@ -41,10 +46,13 @@ namespace ServiceRegistry.Requests
                     Console.WriteLine("Getting config from " + requestPath + " with status code: " + response.IsSuccessStatusCode);
                     return configString;
                 }
+
+                Console.WriteLine($"Request to {requestPath} failed with {response.IsSuccessStatusCode}");
                 return "";
             }
-            catch
+            catch (Exception err)
             {
+                Console.WriteLine($"Request to {requestPath} failed with error: {err}");
                 return "";
             }
         }

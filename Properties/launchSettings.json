@@ -25,9 +25,9 @@
       "publishAllPorts": true,
       "useSSL": false,
       "environmentVariables": {
-        //"ASPNETCORE_URLS": "https://+:4000;http://+:4001",
+        //"ASPNETCORE_URLS": "https://+:3000;http://+:3001",
         "ASPNETCORE_URLS": "http://+:3001"
-        //"ASPNETCORE_HTTPS_PORT": "4000"
+        //"ASPNETCORE_HTTPS_PORT": "3000"
       },
       "httpPort": 3001
       //"httpsPort": 4000

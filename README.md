@@ -15,6 +15,11 @@ dotnet dev-certs https -ep %USERPROFILE%\.aspnet\https\<EXACT_PROJECT_NAME>.pfx 
 dotnet dev-certs https --trust
 ```
 
+E.g.
+```
+dotnet dev-certs https -ep %USERPROFILE%\.aspnet\https\ServiceRegistry.pfx -p 1234
+```
+
 Run the following commands from the project root to build an image and run it. 
 
 ```

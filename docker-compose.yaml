@@ -1,0 +1,23 @@
+version: "3.7"
+
+services:
+  serviceregistry:
+    container_name: serviceregistry
+    image: serviceregistry:latest
+    build: ./ServiceRegistry
+    ports:
+      - "3000:3000"
+      - "3001:3001"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS="http://+"
+      - ASPNETCORE_URLS="https://+;http://+"
+      - ASPNETCORE_HTTPS_PORT=4000
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=1234
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/ServiceRegistry.pfx
+    volumes:
+      - ~/.aspnet/https:/https:ro
+    networks:
+      - data
+    extra_hosts:
+      - "localhost:host-gateway"

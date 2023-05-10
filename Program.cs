@@ -8,7 +8,7 @@ namespace ServiceRegistry
         public static void Main(string[] args)
         {
             int pingTime = 5000; // 1 sec
-            int configUpdateTime = 30000; // 10 sec TODO: Increase to once every 24 hours when we're done.
+            int configUpdateTime = 120000; // 10 sec TODO: Increase to once every 24 hours when we're done.
 
             var builder = WebApplication.CreateBuilder(args);
             if (builder.Environment.IsDevelopment())

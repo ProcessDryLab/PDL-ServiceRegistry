@@ -1,5 +1,11 @@
 # Service registry
 
+## Starting the service registry
+This section describes how to start the service registry
+
+## How to add services
+This sections describes how to add services to the service registry
+
 ## Docker
 This project supports docker runtime environment, for which you will need to download docker from here: https://www.docker.com/products/docker-desktop/.
 

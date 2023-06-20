@@ -92,7 +92,7 @@ namespace ServiceRegistry.ConnectedNodes
             configurations.Remove(nodeUrl);
             onlineStatus.Remove(nodeUrl);
 
-            return Results.Ok($"Repository {nodeUrl} successfully removed");
+            return Results.Ok($"Node {nodeUrl} successfully removed");
         }
 
         public void UpdateOnlineStatus()

@@ -61,6 +61,7 @@ namespace ServiceRegistry.Endpoints
                 return "pong";
             });
 
+            // Recieves a list of URLs and responds with online status for each entry
             app.MapPost("/connections/filters", async (HttpRequest request) =>
             {
                 var body = new StreamReader(request.Body);
@@ -75,6 +76,7 @@ namespace ServiceRegistry.Endpoints
                 return Results.Ok(requestedNodeUrls);
             });
 
+            // Recieves a list of URLs and responds with a list of configs for each entry
             app.MapPost("config/filters", async (HttpRequest request) =>
             {
                 var body = new StreamReader(request.Body);

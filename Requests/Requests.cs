@@ -26,7 +26,6 @@ namespace ServiceRegistry.Requests
             {
                 return false;
             }
-            
         }
 
         public static async Task<string> GetConfigFromNode(string nodeUrl)
@@ -35,9 +34,6 @@ namespace ServiceRegistry.Requests
             try
             {
                 Console.WriteLine("Requesting config from: " + requestPath);
-
-                //var message = new HttpRequestMessage(HttpMethod.Get, requestPath) { Version = new Version(2, 0) };
-                //var response = await client.SendAsync(message);
 
                 HttpResponseMessage response = await client.GetAsync(requestPath);
                 if (response.IsSuccessStatusCode)

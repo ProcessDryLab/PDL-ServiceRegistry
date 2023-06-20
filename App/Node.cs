@@ -1,7 +1,4 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-
-namespace ServiceRegistry.ConnectedNodes
+﻿namespace ServiceRegistry.ConnectedNodes
 {
     public enum NodeType
     {

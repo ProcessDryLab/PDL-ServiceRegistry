@@ -1,10 +1,5 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Xml.Linq;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using ServiceRegistry.ConnectedNodes;
-using ServiceRegistry.Requests;
 
 namespace ServiceRegistry.Endpoints
 {

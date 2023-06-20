@@ -1,7 +1,4 @@
 ﻿using Newtonsoft.Json;
-using Swashbuckle.AspNetCore.SwaggerGen;
-using System.Xml.Linq;
-using ServiceRegistry.Requests;
 using Newtonsoft.Json.Linq;
 //using ServiceRegistry.App;
 

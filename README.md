@@ -3,8 +3,29 @@
 ## Starting the service registry
 This section describes how to start the service registry
 
+Open visual studio and click the run button at the top.
+
 ## How to add services
 This sections describes how to add services to the service registry
+
+Send a post request to https://{host}:{port}/repository or https://{host}:{port}/miner with a json body consisting of a key-value pair as follows:
+
+```
+{
+	"Host": "http://my_new_host:1234"
+}
+```
+
+## How to remove services
+
+Functions exactly the same as adding hosts, except the request must be a delete request with a key-value pair as follows to https://{host}:{port}/repository or https://{host}:{port}/miner:
+
+```
+{
+	"Host": "http://my_new_host:1234"
+}
+```
+
 
 ## Docker
 This project supports docker runtime environment, for which you will need to download docker from here: https://www.docker.com/products/docker-desktop/.
@@ -41,15 +62,15 @@ docker network create -d bridge data
 ## Docker Compose
 It is recommended to use this approach to run the application. To run this project using docker-compose you need to follow the steps below:
 
-Build the docker image:
+Build the docker image:  
 ```
 docker-compose build
 ```
-Run the docker image:
+Run the docker image:  
 ```
 docker-compose up
 ```
-Stop the docker image:
+Stop the docker image:  
 ```
 docker-compose down
 ```

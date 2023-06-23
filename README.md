@@ -28,6 +28,8 @@ Functions exactly the same as adding hosts, except the request must be a delete 
 
 
 ## Docker
+This does not fulfill it's intended functionality when all services are running through docker on the same windows machine.
+
 This project supports docker runtime environment, for which you will need to download docker from here: https://www.docker.com/products/docker-desktop/.
 
 For this project, be aware that express listens on a specfic port (can be found in /Endpoints), which must be the same port that is used in the docker file. 

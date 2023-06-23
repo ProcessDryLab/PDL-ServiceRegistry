@@ -1,11 +1,4 @@
-﻿using System.Text;
-using System;
-using Newtonsoft.Json;
-using System.Collections.Specialized;
-using Newtonsoft.Json.Linq;
-//using ServiceRegistry.App;
-
-namespace ServiceRegistry.Requests
+﻿namespace ServiceRegistry.Requests
 {
     public class Requests
     {
@@ -26,7 +19,6 @@ namespace ServiceRegistry.Requests
             {
                 return false;
             }
-            
         }
 
         public static async Task<string> GetConfigFromNode(string nodeUrl)
@@ -35,9 +27,6 @@ namespace ServiceRegistry.Requests
             try
             {
                 Console.WriteLine("Requesting config from: " + requestPath);
-
-                //var message = new HttpRequestMessage(HttpMethod.Get, requestPath) { Version = new Version(2, 0) };
-                //var response = await client.SendAsync(message);
 
                 HttpResponseMessage response = await client.GetAsync(requestPath);
                 if (response.IsSuccessStatusCode)

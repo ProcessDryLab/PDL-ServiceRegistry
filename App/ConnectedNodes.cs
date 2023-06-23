@@ -1,7 +1,4 @@
 ﻿using Newtonsoft.Json;
-using Swashbuckle.AspNetCore.SwaggerGen;
-using System.Xml.Linq;
-using ServiceRegistry.Requests;
 using Newtonsoft.Json.Linq;
 //using ServiceRegistry.App;
 
@@ -14,7 +11,6 @@ namespace ServiceRegistry.ConnectedNodes
         static readonly string connectedRepositoriesPath = Path.Combine(Directory.GetCurrentDirectory(), "connectedRepositories.json");  
         private static Dictionary<string, Boolean> onlineStatus = new();
         private static Dictionary<string, JToken> configurations = new();
-
         public static ConnectedNodes Instance
         {
             get
@@ -31,7 +27,6 @@ namespace ServiceRegistry.ConnectedNodes
         {
             string fileAsString = File.ReadAllText(pathToFile);
             List<string> nodeUrls = JsonConvert.DeserializeObject<List<string>>(fileAsString);
-            //Dictionary<string, Node>? nodes = JsonConvert.DeserializeObject<Dictionary<string, Node>>(fileAsString);
             nodeUrls ??= new List<string>();
             return nodeUrls;
         }
@@ -68,12 +63,13 @@ namespace ServiceRegistry.ConnectedNodes
 
             string nodeUrl = bodyDict["Host"]; // TODO: Consider deserializing this body to avoid problems with capitalized letters
             
-            if (!nodes.Contains(nodeUrl)) // We only add nodes to the file if they don't exist. Overwriting config is fine.
+            if (!nodes.Contains(nodeUrl)) // We only add nodes to the file if they don't exist.
             {
                 nodes.Add(nodeUrl);
                 UpdateNodeFile(nodes, type);
             }
-
+            
+            //Writing or overwriting config.
             string configString = await Requests.Requests.GetConfigFromNode(nodeUrl);
             bool configFetched = AddConfiguration(nodeUrl, configString);
             if(!configFetched) return Results.Ok($"Node {nodeUrl} added but unable to get config.");
@@ -93,7 +89,7 @@ namespace ServiceRegistry.ConnectedNodes
             configurations.Remove(nodeUrl);
             onlineStatus.Remove(nodeUrl);
 
-            return Results.Ok($"Repository {nodeUrl} successfully removed");
+            return Results.Ok($"Node {nodeUrl} successfully removed");
         }
 
         public void UpdateOnlineStatus()
